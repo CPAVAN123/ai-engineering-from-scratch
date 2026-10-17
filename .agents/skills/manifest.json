@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "layout": "skills",
+  "totals": {
+    "artifacts": 11,
+    "by_type": {
+      "skill": 11
+    },
+    "by_phase": {
+      "phase-01": 11
+    }
+  },
+  "artifacts": [
+    {
+      "type": "skill",
+      "name": "skill-gradient-computation",
+      "phase": 1,
+      "lesson": 4,
+      "version": "1.0.0",
+      "description": "Compute gradients of common ML loss functions and choose the right derivative approach",
+      "tags": [
+        "calculus",
+        "gradients",
+        "backpropagation"
+      ],
+      "source": "phases/01-math-foundations/04-calculus-for-ml/outputs/skill-gradient-computation.md",
+      "target": "skill-gradient-computation/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-autodiff",
+      "phase": 1,
+      "lesson": 5,
+      "version": "",
+      "description": "Build, debug, and reason about automatic differentiation systems",
+      "tags": [],
+      "source": "phases/01-math-foundations/05-chain-rule-and-autodiff/outputs/skill-autodiff.md",
+      "target": "skill-autodiff/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-probability-reasoning",
+      "phase": 1,
+      "lesson": 6,
+      "version": "1.0.0",
+      "description": "Choose the right probability distribution for a given ML problem",
+      "tags": [
+        "probability",
+        "distributions",
+        "modeling"
+      ],
+      "source": "phases/01-math-foundations/06-probability-and-distributions/outputs/skill-probability-reasoning.md",
+      "target": "skill-probability-reasoning/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-information-theory",
+      "phase": 1,
+      "lesson": 9,
+      "version": "1.0.0",
+      "description": "Apply information theory concepts to ML loss functions, model evaluation, and feature selection",
+      "tags": [
+        "information-theory",
+        "entropy",
+        "loss-functions"
+      ],
+      "source": "phases/01-math-foundations/09-information-theory/outputs/skill-information-theory.md",
+      "target": "skill-information-theory/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-dimensionality-reduction",
+      "phase": 1,
+      "lesson": 10,
+      "version": "",
+      "description": "Choose the right dimensionality reduction technique for a given task based on data size, goal, and downstream use",
+      "tags": [],
+      "source": "phases/01-math-foundations/10-dimensionality-reduction/outputs/skill-dimensionality-reduction.md",
+      "target": "skill-dimensionality-reduction/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-svd",
+      "phase": 1,
+      "lesson": 11,
+      "version": "",
+      "description": "Apply SVD to real problems including compression, denoising, recommendations, and least-squares solving",
+      "tags": [],
+      "source": "phases/01-math-foundations/11-singular-value-decomposition/outputs/skill-svd.md",
+      "target": "skill-svd/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-statistical-testing",
+      "phase": 1,
+      "lesson": 15,
+      "version": "1.0.0",
+      "description": "Choose the right statistical test for comparing ML models and evaluating experiments",
+      "tags": [
+        "statistics",
+        "hypothesis-testing",
+        "model-comparison"
+      ],
+      "source": "phases/01-math-foundations/15-statistics-for-ml/outputs/skill-statistical-testing.md",
+      "target": "skill-statistical-testing/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-sampling-strategy",
+      "phase": 1,
+      "lesson": 16,
+      "version": "1.0.0",
+      "description": "Choose the right sampling method for generation, estimation, or inference",
+      "tags": [
+        "sampling",
+        "mcmc",
+        "generation"
+      ],
+      "source": "phases/01-math-foundations/16-sampling-methods/outputs/skill-sampling-strategy.md",
+      "target": "skill-sampling-strategy/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-convexity-checker",
+      "phase": 1,
+      "lesson": 18,
+      "version": "1.0.0",
+      "description": "Determine if an optimization problem is convex and choose the right solver",
+      "tags": [
+        "optimization",
+        "convexity",
+        "solvers"
+      ],
+      "source": "phases/01-math-foundations/18-convex-optimization/outputs/skill-convexity-checker.md",
+      "target": "skill-convexity-checker/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-complex-arithmetic",
+      "phase": 1,
+      "lesson": 19,
+      "version": "",
+      "description": "Quick reference for complex number operations in ML and signal processing contexts",
+      "tags": [],
+      "source": "phases/01-math-foundations/19-complex-numbers/outputs/skill-complex-arithmetic.md",
+      "target": "skill-complex-arithmetic/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "skill-graph-analysis",
+      "phase": 1,
+      "lesson": 21,
+      "version": "",
+      "description": "Analyze graph-structured data and choose the right graph algorithm for ML tasks",
+      "tags": [],
+      "source": "phases/01-math-foundations/21-graph-theory/outputs/skill-graph-analysis.md",
+      "target": "skill-graph-analysis/SKILL.md"
+    }
+  ]
+}
