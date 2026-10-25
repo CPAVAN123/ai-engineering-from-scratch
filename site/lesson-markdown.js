@@ -211,6 +211,7 @@
         if (txt.indexOf('build it') >= 0 || txt.indexOf('build ') === 0) sectionClass = ' section-build';
         else if (txt.indexOf('use it') >= 0 || txt.indexOf('use ') === 0) sectionClass = ' section-use';
         else if (txt.indexOf('ship it') >= 0 || txt.indexOf('ship ') === 0) sectionClass = ' section-ship';
+        else if (txt.indexOf('summary') === 0) sectionClass = ' section-summary';
         if (txt.indexOf('learning objectives') >= 0) {
           var objItems = [];
           for (var lo = i + 1; lo < lines.length; lo++) {
@@ -478,13 +479,80 @@
     text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
     text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (m, label, href) {
-      if (/^https?:\/\/|^mailto:/i.test(href)) {
-        return '<a href="' + href + '" target="_blank" rel="noopener">' + label + '</a>';
+    // Parse inline links by balancing parentheses in the destination.
+    // URLs such as DOI links may contain their own parentheses.
+    var out = '';
+    for (var i = 0; i < text.length;) {
+      if (text.charAt(i) === '\\' && text.charAt(i + 1) === '[') {
+        out += '[';
+        i += 2;
+        continue;
       }
-      return label;
-    });
-    return text.replace(/\u0000(\d+)\u0000/g, function (m, index) { return kept[Number(index)]; });
+      if (text.charAt(i) !== '[') {
+        out += text.charAt(i++);
+        continue;
+      }
+
+      var labelEnd = -1;
+      for (var labelCursor = i + 1; labelCursor < text.length; labelCursor++) {
+        if (text.charAt(labelCursor) === '\\') {
+          labelCursor++;
+          continue;
+        }
+        if (text.charAt(labelCursor) === ']') {
+          labelEnd = labelCursor;
+          break;
+        }
+      }
+      if (labelEnd === -1 || text.charAt(labelEnd + 1) !== '(') {
+        out += text.charAt(i++);
+        continue;
+      }
+
+      var hrefStart = labelEnd + 2;
+      var depth = 1;
+      var hrefEnd = hrefStart;
+      while (hrefEnd < text.length && depth > 0) {
+        var hrefChar = text.charAt(hrefEnd);
+        if (hrefChar === '\\') {
+          hrefEnd += 2;
+          continue;
+        }
+        if (hrefChar === '(') depth++;
+        if (hrefChar === ')') depth--;
+        hrefEnd++;
+      }
+
+      if (depth !== 0) {
+        out += text.charAt(i++);
+        continue;
+      }
+
+      var label = unescapeMarkdownPunctuation(text.slice(i + 1, labelEnd));
+      var href = unescapeMarkdownPunctuation(text.slice(hrefStart, hrefEnd - 1));
+      if (/^https?:\/\/|^mailto:/i.test(href)) {
+        out += '<a href="' + href + '" target="_blank" rel="noopener">' + label + '</a>';
+      } else {
+        out += label;
+      }
+      i = hrefEnd;
+    }
+    return out.replace(/\u0000(\d+)\u0000/g, function (m, index) { return kept[Number(index)]; });
+  }
+
+  function unescapeMarkdownPunctuation(value) {
+    var unescaped = '';
+    for (var i = 0; i < value.length; i++) {
+      var current = value.charAt(i);
+      var next = value.charAt(i + 1);
+      if (current === '\\' && (next === '[' || next === ']' || next === '(' || next === ')' || next === '\\')) {
+        unescaped += next;
+        i++;
+      } else {
+        unescaped += current;
+      }
+    }
+    return unescaped;
   }
 
   function slugify(text) {
@@ -537,11 +605,85 @@
     return code;
   }
 
+  var QUIZ_ANCHORS = {
+    pre: ['the-concept', 'concept', 'build-it', 'build'],
+    check: ['use-it', 'use', 'ship-it', 'ship'],
+    post: ['key-terms']
+  };
+
+  function headingIds(html) {
+    var ids = [];
+    var pattern = /<h2 id="([^"]*)"/g;
+    var match;
+    while ((match = pattern.exec(html)) !== null) ids.push(match[1]);
+    return ids;
+  }
+
+  function anchorIndex(ids, keys) {
+    for (var k = 0; k < keys.length; k++) {
+      for (var i = 0; i < ids.length; i++) {
+        if (ids[i] === keys[k] || ids[i].indexOf(keys[k] + '-') === 0) return i;
+      }
+    }
+    return -1;
+  }
+
+  function sectionIds(markdown) {
+    var ids = [];
+    var fence = false;
+    var lines = String(markdown || '').split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      if (/^\s*```/.test(lines[i])) { fence = !fence; continue; }
+      if (fence) continue;
+      var h2 = lines[i].match(/^## (.+)/);
+      if (h2) ids.push(slugify(h2[1]));
+    }
+    return ids;
+  }
+
+  function quizPlacement(ids, referenceIds) {
+    var n = ids.length;
+    var source = referenceIds && referenceIds.length ? referenceIds : ids;
+    var m = source.length;
+    var pre = anchorIndex(source, QUIZ_ANCHORS.pre);
+    var post = anchorIndex(source, QUIZ_ANCHORS.post);
+    var check = anchorIndex(source, QUIZ_ANCHORS.check);
+    var first = m && source[0].indexOf('learning-objectives') === 0 ? 1 : 0;
+    if (pre < 0) pre = m - first >= 2 ? first + 1 : first;
+    if (post < 0) post = m;
+    if (post < pre) post = pre;
+    if (check < 0 || check > post) {
+      check = post - 1 > pre ? post - 1 : post;
+    }
+    if (check < pre) check = pre;
+    function toPage(index) {
+      return index >= m ? n : Math.min(index, n);
+    }
+    return { pre: toPage(pre), check: toPage(check), post: toPage(post), count: n };
+  }
+
+  function quizPanelQuestions(data) {
+    var source = data && (data.questions || data);
+    if (!Array.isArray(source)) return null;
+    var shownInline = source.some(function (q) {
+      return q && q.question && Array.isArray(q.options) &&
+        typeof q.correct === 'number' && q.correct >= 0 && q.correct < q.options.length;
+    });
+    return shownInline ? [] : null;
+  }
+
   return {
     parseMd: parseMd,
+    headingIds: headingIds,
+    sectionIds: sectionIds,
+    quizPlacement: quizPlacement,
+    quizPanelQuestions: quizPanelQuestions,
     extractMath: extractMath,
     splitInlineMath: splitInlineMath,
     slugify: slugify,
-    escapeAttr: escapeAttr
+    escapeAttr: escapeAttr,
+    inlineFormat: inlineFormat,
+    splitTableRow: splitTableRow,
+    highlightSyntax: highlightSyntax
   };
 }));
