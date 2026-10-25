@@ -1,2 +1,3 @@
 # My AI Engineering Notes
 Tracking my progress across the phases.
+- [x] Phase 0 Lesson 02: Git & Collaboration completed!
