@@ -5,5 +5,7 @@ Tracking my progress across the phases.
 - [x] Phase 0 Lesson 04: APIs & Keys completed!
 - [x] Phase 0 Lesson 05: Jupyter Notebooks completed!
 - [x] Phase 0 Lesson 06: Python Environments completed!
+- [x] Phase 0 Lesson 07: Docker for AI completed!
+
 
 
