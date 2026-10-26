@@ -4,6 +4,6 @@ Tracking my progress across the phases.
 - [x] Phase 0 Lesson 03: GPU Setup & Cloud completed!
 - [x] Phase 0 Lesson 04: APIs & Keys completed!
 - [x] Phase 0 Lesson 05: Jupyter Notebooks completed!
- [x] Phase 0 Lesson 06: Python Environments completed!
+- [x] Phase 0 Lesson 06: Python Environments completed!
 
 
